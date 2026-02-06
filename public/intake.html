@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Squidworks AI — Quick Intake</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b1220;--panel:#0f1a33;--text:#eaf0ff;--muted:#b8c4e6;--accent:#ff7a3d;--line:rgba(255,255,255,.12)}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial; background:linear-gradient(180deg,var(--bg),#070b15); color:var(--text)}
+    a{color:inherit} .wrap{max-width:860px;margin:0 auto;padding:32px 20px}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{font-weight:700}
+    .btn{background:var(--accent);color:#111;border:none;border-radius:12px;padding:12px 16px;font-weight:800;text-decoration:none;display:inline-block;cursor:pointer}
+    .btn.secondary{background:transparent;color:var(--text);border:1px solid var(--line)}
+    .card{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;padding:18px}
+    h1{margin:26px 0 8px;font-size:32px}
+    p{color:var(--muted);line-height:1.5;margin:0 0 12px}
+    label{display:block;font-weight:700;margin:12px 0 6px}
+    input,textarea,select{width:100%;padding:12px 12px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--text);outline:none}
+    textarea{min-height:110px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .hint{font-size:13px;color:var(--muted)}
+    .ok{display:none;margin-top:12px;padding:12px;border-radius:12px;background:rgba(60,255,160,.08);border:1px solid rgba(60,255,160,.25)}
+    .err{display:none;margin-top:12px;padding:12px;border-radius:12px;background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.25)}
+    @media(max-width:700px){.row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="nav">
+      <div class="brand"><a href="/">Squidworks AI</a></div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <a class="btn secondary" href="/pricing.html">Pricing</a>
+      </div>
+    </div>
+
+    <h1>Quick intake</h1>
+    <p>2–3 minutes. We’ll use this to build a voice agent demo that fits your business.</p>
+
+    <div class="card">
+      <form id="f">
+        <!-- Honeypot (bots) -->
+        <div style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden">
+          <label>Company website</label>
+          <input name="website_hp" autocomplete="off" />
+        </div>
+
+        <div class="row">
+          <div>
+            <label>First name *</label>
+            <input name="first_name" required />
+          </div>
+          <div>
+            <label>Last name</label>
+            <input name="last_name" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Email *</label>
+            <input type="email" name="email" required />
+          </div>
+          <div>
+            <label>Phone</label>
+            <input name="phone" placeholder="Optional" />
+          </div>
+        </div>
+
+        <label>Business name *</label>
+        <input name="business_name" required />
+
+        <label>What would you like to get out of a voice agent? *</label>
+        <textarea name="goal" required placeholder="Ex: stop missing calls, qualify leads, book appointments, answer FAQs…"></textarea>
+
+        <label>Other relevant info</label>
+        <textarea name="other_info" placeholder="Anything else we should know (call types, service area, hours, etc.)"></textarea>
+
+        <label>Preferred follow-up *</label>
+        <select name="preferred_followup" required>
+          <option value="text">Text</option>
+          <option value="email">Email</option>
+        </select>
+        <div class="hint">If you choose text, include a mobile number above.</div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+          <button class="btn" type="submit">Submit</button>
+          <a class="btn secondary" href="/">Back</a>
+        </div>
+
+        <div class="ok" id="ok">Submitted. Thank you — we’ll follow up shortly.</div>
+        <div class="err" id="err">Something went wrong. Please try again, or email hello@squidworks.ai.</div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const f = document.getElementById('f');
+    const ok = document.getElementById('ok');
+    const err = document.getElementById('err');
+
+    f.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      ok.style.display = 'none';
+      err.style.display = 'none';
+
+      const fd = new FormData(f);
+      const payload = Object.fromEntries(fd.entries());
+
+      try {
+        const r = await fetch('/api/intake', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok || !j.ok) throw new Error(j.error || 'request_failed');
+        ok.style.display = 'block';
+        f.reset();
+      } catch (e) {
+        err.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

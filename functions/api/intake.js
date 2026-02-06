@@ -1,0 +1,152 @@
+/**
+ * Cloudflare Pages Function: POST /api/intake
+ * Store-first into D1, then sync to GoHighLevel.
+ */
+
+function json(data, init = {}) {
+  return new Response(JSON.stringify(data), {
+    headers: { 'content-type': 'application/json', ...(init.headers || {}) },
+    status: init.status || 200,
+  });
+}
+
+function nowIso() {
+  return new Date().toISOString();
+}
+
+function uuid() {
+  // crypto.randomUUID is supported in Workers
+  return crypto.randomUUID();
+}
+
+function clean(s) {
+  if (s == null) return '';
+  return String(s).trim();
+}
+
+function redactForLog(payload) {
+  // Keep minimal PII in logs; raw_json is stored in D1.
+  const out = { ...payload };
+  return out;
+}
+
+async function ghlUpsertContact(env, { first_name, last_name, email, phone, business_name, goal, other_info, preferred_followup }) {
+  // NOTE: GHL upsert semantics vary; simplest: create contact.
+  // Later: search by email/phone then update.
+  const url = 'https://services.leadconnectorhq.com/contacts/';
+
+  const body = {
+    locationId: env.GHL_LOCATION_ID,
+    firstName: first_name || undefined,
+    lastName: last_name || undefined,
+    email: email || undefined,
+    phone: phone || undefined,
+    companyName: business_name || undefined,
+    // Custom fields are environment-specific; we will map later once field IDs are confirmed.
+    // customFields: [...]
+    tags: ['intake:voice-agent'],
+    source: 'squidworks.ai:intake',
+  };
+
+  const resp = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${env.GHL_API_KEY}`,
+      Version: '2021-07-28',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok) {
+    throw new Error(`ghl_contact_error:${resp.status}:${JSON.stringify(data).slice(0, 500)}`);
+  }
+
+  const contactId = data?.contact?.id || data?.id;
+  return { contactId, raw: data };
+}
+
+export async function onRequestPost(context) {
+  const { request, env } = context;
+
+  if (!env.DB) return json({ ok: false, error: 'missing_d1_binding' }, { status: 500 });
+  if (!env.GHL_API_KEY || !env.GHL_LOCATION_ID) return json({ ok: false, error: 'missing_ghl_env' }, { status: 500 });
+
+  let payload;
+  try {
+    payload = await request.json();
+  } catch {
+    return json({ ok: false, error: 'invalid_json' }, { status: 400 });
+  }
+
+  // Honeypot
+  if (payload?.website_hp) {
+    return json({ ok: true });
+  }
+
+  const first_name = clean(payload.first_name);
+  const last_name = clean(payload.last_name);
+  const email = clean(payload.email);
+  const phone = clean(payload.phone);
+  const business_name = clean(payload.business_name);
+  const goal = clean(payload.goal);
+  const other_info = clean(payload.other_info);
+  const preferred_followup = clean(payload.preferred_followup) || 'text';
+
+  if (!first_name || !email || !business_name || !goal) {
+    return json({ ok: false, error: 'missing_required_fields' }, { status: 400 });
+  }
+
+  const id = uuid();
+  const created_at = nowIso();
+
+  const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || '';
+  const user_agent = request.headers.get('user-agent') || '';
+
+  const raw_json = JSON.stringify({ ...payload, _meta: { created_at, ip, user_agent } });
+
+  // Store-first
+  await env.DB.prepare(
+    `INSERT INTO intake_submissions (id, created_at, source, ip, user_agent, raw_json, first_name, last_name, email, phone, business_name, goal, other_info, preferred_followup)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  ).bind(
+    id,
+    created_at,
+    'web:intake',
+    ip,
+    user_agent,
+    raw_json,
+    first_name,
+    last_name,
+    email,
+    phone,
+    business_name,
+    goal,
+    other_info,
+    preferred_followup
+  ).run();
+
+  // Sync to GHL
+  try {
+    const { contactId } = await ghlUpsertContact(env, { first_name, last_name, email, phone, business_name, goal, other_info, preferred_followup });
+
+    await env.DB.prepare(
+      `UPDATE intake_submissions
+       SET ghl_sync_status='ok', ghl_contact_id=?, sync_attempts=sync_attempts+1, last_sync_at=?
+       WHERE id=?`
+    ).bind(contactId, nowIso(), id).run();
+
+    return json({ ok: true, id, contactId });
+  } catch (e) {
+    const msg = String(e?.message || e);
+    await env.DB.prepare(
+      `UPDATE intake_submissions
+       SET ghl_sync_status='error', ghl_error=?, sync_attempts=sync_attempts+1, last_sync_at=?
+       WHERE id=?`
+    ).bind(msg.slice(0, 1000), nowIso(), id).run();
+
+    // Still return ok=false so UI can show error; data is not lost.
+    return json({ ok: false, error: 'ghl_sync_failed', id }, { status: 502 });
+  }
+}

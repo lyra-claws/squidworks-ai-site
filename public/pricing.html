@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Squidworks AI — Pricing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b1220;--panel:#0f1a33;--text:#eaf0ff;--muted:#b8c4e6;--accent:#ff7a3d;--line:rgba(255,255,255,.12)}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial; background:linear-gradient(180deg,var(--bg),#070b15); color:var(--text)}
+    a{color:inherit} .wrap{max-width:1060px;margin:0 auto;padding:32px 20px}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{font-weight:700}
+    .btn{background:var(--accent);color:#111;border:none;border-radius:12px;padding:12px 16px;font-weight:700;text-decoration:none;display:inline-block}
+    .btn.secondary{background:transparent;color:var(--text);border:1px solid var(--line)}
+    .card{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;padding:18px}
+    h1{margin:26px 0 12px;font-size:36px}
+    p{color:var(--muted);line-height:1.5}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+    .price{font-size:28px;font-weight:800;margin:6px 0}
+    ul{margin:12px 0 0;padding-left:18px;color:var(--muted);line-height:1.6}
+    .note{margin-top:16px}
+    @media(max-width:880px){.grid{grid-template-columns:1fr} h1{font-size:30px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="nav">
+      <div class="brand"><a href="/">Squidworks AI</a></div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <a class="btn secondary" href="/">Home</a>
+        <a class="btn" href="/intake.html">Get a demo</a>
+      </div>
+    </div>
+
+    <h1>Pricing</h1>
+    <p>All plans include an inbound voice agent + summaries. Upgrade as you expand into texting, automation, and deeper ops.</p>
+
+    <div class="grid">
+      <div class="card">
+        <div style="font-weight:800">Essentials</div>
+        <div class="price">$75<span style="font-size:14px;font-weight:700;color:var(--muted)">/mo</span></div>
+        <p>Email-only summaries. Best for a clean voicemail replacement.</p>
+        <ul>
+          <li>300 minutes included</li>
+          <li>Email summaries (no SMS)</li>
+          <li>Basic lead capture</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color:rgba(255,122,61,.6)">
+        <div style="font-weight:800">Standard</div>
+        <div class="price">$150<span style="font-size:14px;font-weight:700;color:var(--muted)">/mo</span></div>
+        <p>Texting + light automation. Best for converting leads fast.</p>
+        <ul>
+          <li>600 minutes included</li>
+          <li>SMS links + confirmations</li>
+          <li>Light automation + routing</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div style="font-weight:800">Pro</div>
+        <div class="price">$400<span style="font-size:14px;font-weight:700;color:var(--muted)">/mo</span></div>
+        <p>Advanced automation + reporting. Best for a front office.</p>
+        <ul>
+          <li>2,000 minutes included</li>
+          <li>Advanced automation</li>
+          <li>Richer reporting</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card note">
+      <div style="font-weight:800">Overage</div>
+      <p>$0.25/min over included minutes (all plans).</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn" href="/intake.html">Start the quick intake</a>
+        <a class="btn secondary" href="/">Back</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
