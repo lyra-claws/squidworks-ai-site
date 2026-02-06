@@ -4,41 +4,63 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Squidworks AI — Quick Intake</title>
+  <meta name="description" content="2–3 minute intake to build a meaningful voice agent demo." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root{--bg:#0b1220;--panel:#0f1a33;--text:#eaf0ff;--muted:#b8c4e6;--accent:#ff7a3d;--line:rgba(255,255,255,.12)}
-    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial; background:linear-gradient(180deg,var(--bg),#070b15); color:var(--text)}
-    a{color:inherit} .wrap{max-width:860px;margin:0 auto;padding:32px 20px}
+    :root{--bg0:#070A14;--bg1:#0B1220;--panel:rgba(255,255,255,.06);--panel2:rgba(255,255,255,.04);--text:#EAF0FF;--muted:#B8C4E6;--line:rgba(255,255,255,.12);--accent:#FF7A3D;--accent2:#3DE7FF;--shadow:0 18px 60px rgba(0,0,0,.45);--ok:#3CFFA0;--bad:#FF5050}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--text);
+      background:radial-gradient(1100px 600px at 20% 0%, rgba(61,231,255,.16), transparent 55%),
+               radial-gradient(900px 520px at 85% 10%, rgba(255,122,61,.16), transparent 55%),
+               linear-gradient(180deg,var(--bg1),var(--bg0));}
+    a{color:inherit}
+    .wrap{max-width:900px;margin:0 auto;padding:26px 20px 34px}
     .nav{display:flex;align-items:center;justify-content:space-between;gap:16px}
-    .brand{font-weight:700}
-    .btn{background:var(--accent);color:#111;border:none;border-radius:12px;padding:12px 16px;font-weight:800;text-decoration:none;display:inline-block;cursor:pointer}
-    .btn.secondary{background:transparent;color:var(--text);border:1px solid var(--line)}
-    .card{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;padding:18px}
-    h1{margin:26px 0 8px;font-size:32px}
-    p{color:var(--muted);line-height:1.5;margin:0 0 12px}
-    label{display:block;font-weight:700;margin:12px 0 6px}
-    input,textarea,select{width:100%;padding:12px 12px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--text);outline:none}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;text-decoration:none}
+    .dot{width:10px;height:10px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 0 22px rgba(61,231,255,.35)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:14px;padding:12px 16px;font-weight:800;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .12s ease,border-color .12s ease}
+    .btn.primary{background:linear-gradient(135deg, rgba(255,122,61,1), rgba(255,122,61,.82));color:#140A06}
+    .btn.ghost{background:rgba(255,255,255,.03);border-color:var(--line)}
+    .btn:hover{transform:translateY(-1px)}
+
+    .kicker{display:inline-flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(234,240,255,.86);font-weight:800}
+    .kicker .bar{width:16px;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px}
+
+    h1{margin:18px 0 8px;font-size:34px;letter-spacing:-.02em}
+    p{margin:0 0 12px;color:var(--muted);line-height:1.55}
+
+    .card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);backdrop-filter: blur(10px)}
+
+    label{display:block;font-weight:800;margin:12px 0 6px;color:rgba(234,240,255,.95)}
+    input,textarea,select{width:100%;padding:12px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.18);color:var(--text);outline:none}
+    input:focus,textarea:focus,select:focus{border-color:rgba(61,231,255,.35);box-shadow:0 0 0 4px rgba(61,231,255,.10)}
     textarea{min-height:110px;resize:vertical}
     .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .hint{font-size:13px;color:var(--muted)}
-    .ok{display:none;margin-top:12px;padding:12px;border-radius:12px;background:rgba(60,255,160,.08);border:1px solid rgba(60,255,160,.25)}
-    .err{display:none;margin-top:12px;padding:12px;border-radius:12px;background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.25)}
-    @media(max-width:700px){.row{grid-template-columns:1fr}}
+    .hint{font-size:13px;color:rgba(184,196,230,.92);margin-top:6px}
+
+    .ok,.err{display:none;margin-top:12px;padding:12px;border-radius:14px;font-weight:700}
+    .ok{background:rgba(60,255,160,.08);border:1px solid rgba(60,255,160,.25)}
+    .err{background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.25)}
+
+    .fineprint{margin-top:10px;color:rgba(184,196,230,.92);font-size:13px;line-height:1.45}
+    .fineprint b{color:rgba(234,240,255,.95)}
+
+    @media(max-width:740px){.row{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="nav">
-      <div class="brand"><a href="/">Squidworks AI</a></div>
+      <a class="brand" href="/"><span class="dot"></span> Squidworks AI</a>
       <div style="display:flex;gap:10px;align-items:center">
-        <a class="btn secondary" href="/pricing.html">Pricing</a>
+        <a class="btn ghost" href="/pricing.html">Pricing</a>
       </div>
     </div>
 
-    <h1>Quick intake</h1>
-    <p>2–3 minutes. We’ll use this to build a voice agent demo that fits your business.</p>
+    <div class="kicker" style="margin-top:16px"><span class="bar"></span> Quick intake</div>
+    <h1>Build a demo that fits your business</h1>
+    <p>2–3 minutes. We’ll use this to tailor the voice agent and run a clean demo call.</p>
 
     <div class="card">
       <form id="f">
@@ -77,7 +99,7 @@
         <textarea name="goal" required placeholder="Ex: stop missing calls, qualify leads, book appointments, answer FAQs…"></textarea>
 
         <label>Other relevant info</label>
-        <textarea name="other_info" placeholder="Anything else we should know (call types, service area, hours, etc.)"></textarea>
+        <textarea name="other_info" placeholder="Call types, hours, service area, tone preferences…"></textarea>
 
         <label>Preferred follow-up *</label>
         <select name="preferred_followup" required>
@@ -87,8 +109,12 @@
         <div class="hint">If you choose text, include a mobile number above.</div>
 
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
-          <button class="btn" type="submit">Submit</button>
-          <a class="btn secondary" href="/">Back</a>
+          <button class="btn primary" type="submit">Submit</button>
+          <a class="btn ghost" href="/">Back</a>
+        </div>
+
+        <div class="fineprint">
+          <b>Privacy:</b> we use this to build your demo. We don’t sell your data. If syncing to our CRM ever fails, we still capture your submission and reconcile it.
         </div>
 
         <div class="ok" id="ok">Submitted. Thank you — we’ll follow up shortly.</div>
