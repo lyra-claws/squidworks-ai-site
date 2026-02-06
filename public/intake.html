@@ -39,6 +39,10 @@
     .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .hint{font-size:13px;color:rgba(184,196,230,.92);margin-top:6px}
 
+    /* Fix: dropdown option colors (browser default backgrounds can be light) */
+    select{appearance:auto}
+    select option{background:#0B1220;color:var(--text)}
+
     .ok,.err{display:none;margin-top:12px;padding:12px;border-radius:14px;font-weight:700}
     .ok{background:rgba(60,255,160,.08);border:1px solid rgba(60,255,160,.25)}
     .err{background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.25)}
