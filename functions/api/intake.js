@@ -42,9 +42,12 @@ async function ghlUpsertContact(env, { first_name, last_name, email, phone, busi
     email: email || undefined,
     phone: phone || undefined,
     companyName: business_name || undefined,
-    // Custom fields are environment-specific; we will map later once field IDs are confirmed.
-    // customFields: [...]
-    tags: ['intake:voice-agent'],
+    customFields: [
+      { id: 't5zu8K2eLte2H0pIJPwe', value: business_name },        // What's your business name?
+      { id: '47n5yCoTNXaSJkmJUOIp', value: goal },                 // What are you hoping your voice agent can do?
+      { id: 'Kk3EP7hOQ9KEYOVWDz2P', value: 'Yes' },               // Consent to receive texts (implied by form submit)
+    ].filter(f => f.value),
+    tags: ['intake:voice-agent', 'source:squidworks-site'],
     source: 'squidworks.ai:intake',
   };
 
