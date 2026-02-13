@@ -30,12 +30,13 @@ function redactForLog(payload) {
   return out;
 }
 
-async function ghlUpsertContact(env, { first_name, last_name, email, phone, business_name, goal, other_info, preferred_followup, source }) {
+async function ghlUpsertContact(env, { first_name, last_name, email, phone, business_name, goal, other_info, preferred_followup, source, sms_consent }) {
   // NOTE: GHL upsert semantics vary; simplest: create contact.
   // Later: search by email/phone then update.
   const url = 'https://services.leadconnectorhq.com/contacts/';
 
   const intakeTag = source === 'web:battle-buddy' ? 'intake:battle-buddy' : 'intake:voice-agent';
+  const consentValue = sms_consent ? 'Yes' : 'No';
 
   const body = {
     locationId: env.GHL_LOCATION_ID,
@@ -47,8 +48,8 @@ async function ghlUpsertContact(env, { first_name, last_name, email, phone, busi
     customFields: [
       { id: 't5zu8K2eLte2H0pIJPwe', value: business_name },        // What's your business name?
       { id: '47n5yCoTNXaSJkmJUOIp', value: goal },                 // What are you hoping your voice agent can do?
-      { id: 'Kk3EP7hOQ9KEYOVWDz2P', value: 'Yes' },               // Consent to receive texts (implied by form submit)
-    ].filter(f => f.value),
+      { id: 'Kk3EP7hOQ9KEYOVWDz2P', value: consentValue },         // Consent to receive texts from us
+    ].filter(f => f.value != null && f.value !== ''),
     tags: [intakeTag, 'source:squidworks-site'],
     source: 'squidworks.ai:intake',
   };
@@ -100,6 +101,9 @@ export async function onRequestPost(context) {
   const other_info = clean(payload.other_info ?? payload.otherInfo);
   const preferred_followup = clean(payload.preferred_followup ?? payload.preferredFollowup) || 'text';
 
+  // Explicit SMS consent checkbox (battle-buddy page). Only treat as opted-in when checked.
+  const sms_consent = clean(payload.sms_consent) === 'yes';
+
   // Minimal required fields for contact capture.
   // (Some landing pages intentionally omit business name.)
   if (!first_name || !email) {
@@ -142,7 +146,7 @@ export async function onRequestPost(context) {
 
   // Sync to GHL
   try {
-    const { contactId } = await ghlUpsertContact(env, { first_name, last_name, email, phone, business_name, goal, other_info, preferred_followup, source });
+    const { contactId } = await ghlUpsertContact(env, { first_name, last_name, email, phone, business_name, goal, other_info, preferred_followup, source, sms_consent });
 
     await env.DB.prepare(
       `UPDATE intake_submissions
