@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Battle Buddy AI — Squidworks</title>
+  <meta name="description" content="AI can be your battle buddy — so you don’t have to fight alone." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Roboto Mono',monospace;background-color:#111827;color:#f9fafb;padding:2rem;display:flex;flex-direction:column;align-items:center}
+    h1{font-size:2.5rem;text-align:center;margin-bottom:1rem;color:#d1d5db}
+    p{max-width:600px;text-align:center;font-size:1.1rem;margin-bottom:2rem;line-height:1.6;color:#9ca3af}
+    form{width:100%;max-width:500px;background-color:#1f2937;padding:2rem;border-radius:.5rem;box-shadow:0 0 20px rgba(0,0,0,.3)}
+    label{display:block;margin-bottom:.5rem;font-weight:700;color:#f3f4f6}
+    input,textarea{width:100%;padding:.75rem;margin-bottom:1.25rem;border-radius:.375rem;border:none;background-color:#374151;color:#f9fafb;font-size:1rem}
+    textarea{resize:vertical}
+    button{background-color:#10b981;color:#fff;padding:.75rem 1.5rem;font-size:1rem;border:none;border-radius:.375rem;cursor:pointer;transition:background-color .3s;font-weight:700;width:100%}
+    button:hover{background-color:#059669}
+    .fine{margin-top:14px;font-size:.9rem;color:#9ca3af;line-height:1.45;text-align:center}
+    .fine a{color:#c7d2fe}
+    .ok,.err{display:none;margin-top:14px;padding:12px;border-radius:10px;font-weight:700;text-align:center}
+    .ok{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.35)}
+    .err{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35)}
+    footer{margin-top:3rem;font-size:.9rem;color:#6b7280;text-align:center}
+  </style>
+</head>
+<body>
+  <h1>Battle Buddy AI</h1>
+  <p>
+    In a world moving too fast, you don’t need to master AI—you just need a true ally.<br><br>
+    This isn’t about domination. This is about collaboration.<br>
+    <strong>AI can be your battle buddy—so you don’t have to fight alone.</strong>
+  </p>
+
+  <form id="f">
+    <!-- Honeypot (bots) -->
+    <div style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden">
+      <label>Company website</label>
+      <input name="website_hp" autocomplete="off" />
+    </div>
+
+    <input type="hidden" name="source" value="web:battle-buddy" />
+
+    <label for="firstName">First Name</label>
+    <input type="text" id="firstName" name="firstName" required />
+
+    <label for="lastName">Last Name</label>
+    <input type="text" id="lastName" name="lastName" />
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required />
+
+    <label for="phone">Phone (optional)</label>
+    <input type="tel" id="phone" name="phone" />
+
+    <label for="goal">What would help me help you?</label>
+    <textarea id="goal" name="goal" rows="5" placeholder="What are you hoping to get out of AI? Optional, but helpful."></textarea>
+
+    <button type="submit">Count Me In</button>
+
+    <div class="fine">
+      Privacy: we use this to follow up. If syncing to our CRM ever fails, we still capture your submission and reconcile it.<br>
+      <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/sms-terms.html">SMS Terms</a>
+    </div>
+
+    <div class="ok" id="ok">Submitted. Thank you — we’ll follow up shortly.</div>
+    <div class="err" id="err">Something went wrong. Please try again, or email hello@squidworks.ai.</div>
+  </form>
+
+  <footer>
+    &copy; 2026 Squidworks AI · All rights reserved
+  </footer>
+
+  <script>
+    const f = document.getElementById('f');
+    const ok = document.getElementById('ok');
+    const err = document.getElementById('err');
+
+    f.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      ok.style.display = 'none';
+      err.style.display = 'none';
+
+      const fd = new FormData(f);
+      const payload = Object.fromEntries(fd.entries());
+
+      try {
+        const r = await fetch('/api/intake', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok || !j.ok) throw new Error(j.error || 'request_failed');
+        ok.style.display = 'block';
+        f.reset();
+      } catch (e) {
+        err.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

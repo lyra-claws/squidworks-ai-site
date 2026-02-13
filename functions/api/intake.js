@@ -88,18 +88,24 @@ export async function onRequestPost(context) {
     return json({ ok: true });
   }
 
-  const first_name = clean(payload.first_name);
-  const last_name = clean(payload.last_name);
+  // Accept both snake_case and camelCase field names (for variant landing pages)
+  const first_name = clean(payload.first_name ?? payload.firstName);
+  const last_name = clean(payload.last_name ?? payload.lastName);
   const email = clean(payload.email);
   const phone = clean(payload.phone);
-  const business_name = clean(payload.business_name);
-  const goal = clean(payload.goal);
-  const other_info = clean(payload.other_info);
-  const preferred_followup = clean(payload.preferred_followup) || 'text';
+  let business_name = clean(payload.business_name ?? payload.businessName);
+  let goal = clean(payload.goal);
+  const other_info = clean(payload.other_info ?? payload.otherInfo);
+  const preferred_followup = clean(payload.preferred_followup ?? payload.preferredFollowup) || 'text';
 
-  if (!first_name || !email || !business_name || !goal) {
+  // Minimal required fields for contact capture.
+  // (Some landing pages intentionally omit business name.)
+  if (!first_name || !email) {
     return json({ ok: false, error: 'missing_required_fields' }, { status: 400 });
   }
+
+  if (!business_name) business_name = '(personal)';
+  if (!goal) goal = 'Inbound interest';
 
   const id = uuid();
   const created_at = nowIso();
@@ -110,13 +116,15 @@ export async function onRequestPost(context) {
   const raw_json = JSON.stringify({ ...payload, _meta: { created_at, ip, user_agent } });
 
   // Store-first
+  const source = clean(payload.source) || 'web:intake';
+
   await env.DB.prepare(
     `INSERT INTO intake_submissions (id, created_at, source, ip, user_agent, raw_json, first_name, last_name, email, phone, business_name, goal, other_info, preferred_followup)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(
     id,
     created_at,
-    'web:intake',
+    source,
     ip,
     user_agent,
     raw_json,
