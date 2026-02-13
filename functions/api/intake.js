@@ -35,7 +35,10 @@ async function ghlUpsertContact(env, { first_name, last_name, email, phone, busi
   // Later: search by email/phone then update.
   const url = 'https://services.leadconnectorhq.com/contacts/';
 
-  const intakeTag = source === 'web:battle-buddy' ? 'intake:battle-buddy' : 'intake:voice-agent';
+  const intakeTag =
+    source === 'web:battle-buddy' ? 'intake:battle-buddy' :
+    source === 'web:vets' ? 'intake:vets' :
+    'intake:voice-agent';
   const consentValue = sms_consent ? 'Yes' : 'No';
 
   const body = {
