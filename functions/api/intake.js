@@ -30,10 +30,12 @@ function redactForLog(payload) {
   return out;
 }
 
-async function ghlUpsertContact(env, { first_name, last_name, email, phone, business_name, goal, other_info, preferred_followup }) {
+async function ghlUpsertContact(env, { first_name, last_name, email, phone, business_name, goal, other_info, preferred_followup, source }) {
   // NOTE: GHL upsert semantics vary; simplest: create contact.
   // Later: search by email/phone then update.
   const url = 'https://services.leadconnectorhq.com/contacts/';
+
+  const intakeTag = source === 'web:battle-buddy' ? 'intake:battle-buddy' : 'intake:voice-agent';
 
   const body = {
     locationId: env.GHL_LOCATION_ID,
@@ -47,7 +49,7 @@ async function ghlUpsertContact(env, { first_name, last_name, email, phone, busi
       { id: '47n5yCoTNXaSJkmJUOIp', value: goal },                 // What are you hoping your voice agent can do?
       { id: 'Kk3EP7hOQ9KEYOVWDz2P', value: 'Yes' },               // Consent to receive texts (implied by form submit)
     ].filter(f => f.value),
-    tags: ['intake:voice-agent', 'source:squidworks-site'],
+    tags: [intakeTag, 'source:squidworks-site'],
     source: 'squidworks.ai:intake',
   };
 
@@ -140,7 +142,7 @@ export async function onRequestPost(context) {
 
   // Sync to GHL
   try {
-    const { contactId } = await ghlUpsertContact(env, { first_name, last_name, email, phone, business_name, goal, other_info, preferred_followup });
+    const { contactId } = await ghlUpsertContact(env, { first_name, last_name, email, phone, business_name, goal, other_info, preferred_followup, source });
 
     await env.DB.prepare(
       `UPDATE intake_submissions
