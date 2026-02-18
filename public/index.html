@@ -3,142 +3,60 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Squidworks AI — Stop missing calls. Capture every lead.</title>
-  <meta name="description" content="An AI receptionist that answers inbound calls, captures lead details, and sends actionable summaries." />
+  <title>Squidworks AI — Practical AI help for busy teams</title>
+  <meta name="description" content="Business-clean AI support: demystify, deploy, and maintain practical systems (without hype)." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --bg0:#070A14;
-      --bg1:#0B1220;
-      --panel:rgba(255,255,255,.06);
-      --panel2:rgba(255,255,255,.04);
-      --text:#EAF0FF;
-      --muted:#B8C4E6;
-      --line:rgba(255,255,255,.12);
-      --accent:#FF7A3D;      /* ember */
-      --accent2:#3DE7FF;     /* cyan */
-      --ok:#3CFFA0;
-      --shadow: 0 18px 60px rgba(0,0,0,.45);
-    }
-
+    :root{--bg0:#070A14;--bg1:#0B1220;--panel:rgba(255,255,255,.06);--panel2:rgba(255,255,255,.04);--text:#EAF0FF;--muted:#B8C4E6;--line:rgba(255,255,255,.12);--accent:#FF7A3D;--accent2:#3DE7FF;--shadow:0 18px 60px rgba(0,0,0,.45);--ok:#3CFFA0}
     *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color:var(--text);
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--text);
       background:
         radial-gradient(1100px 600px at 20% 0%, rgba(61,231,255,.18), transparent 55%),
         radial-gradient(900px 520px at 85% 10%, rgba(255,122,61,.18), transparent 55%),
         radial-gradient(900px 700px at 50% 120%, rgba(140,120,255,.10), transparent 55%),
         linear-gradient(180deg, var(--bg1), var(--bg0));
     }
-    a{color:inherit}
-
-    .wrap{max-width:1120px;margin:0 auto;padding:26px 20px 34px}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1120px;margin:0 auto;padding:26px 20px 40px}
 
     .nav{display:flex;align-items:center;justify-content:space-between;gap:16px}
     .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px}
-    .brand .dot{width:10px;height:10px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 0 22px rgba(61,231,255,.35)}
-    .nav a{text-decoration:none}
+    .dot{width:10px;height:10px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 0 22px rgba(61,231,255,.35)}
+    .pill{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 
-    .pill{display:flex;gap:10px;align-items:center}
-
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;
-      gap:10px;
-      border-radius:14px;
-      padding:12px 16px;
-      font-weight:800;
-      text-decoration:none;
-      border:1px solid transparent;
-      cursor:pointer;
-      user-select:none;
-      transition:transform .12s ease, background .12s ease, border-color .12s ease, opacity .12s ease;
-    }
-    .btn.primary{
-      background:linear-gradient(135deg, rgba(255,122,61,1), rgba(255,122,61,.82));
-      color:#140A06;
-      box-shadow:0 14px 50px rgba(255,122,61,.18);
-    }
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:14px;padding:12px 16px;font-weight:800;border:1px solid transparent;cursor:pointer;user-select:none;transition:transform .12s ease,border-color .12s ease}
+    .btn.primary{background:linear-gradient(135deg, rgba(255,122,61,1), rgba(255,122,61,.82));color:#140A06;box-shadow:0 14px 50px rgba(255,122,61,.18)}
     .btn.primary:hover{transform:translateY(-1px)}
-
-    .btn.ghost{
-      background:rgba(255,255,255,.03);
-      border-color:var(--line);
-      color:var(--text);
-    }
+    .btn.ghost{background:rgba(255,255,255,.03);border-color:var(--line)}
     .btn.ghost:hover{border-color:rgba(255,255,255,.22);transform:translateY(-1px)}
-
-    .hero{
-      margin-top:22px;
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap:18px;
-      align-items:stretch;
-    }
-
-    .card{
-      background:linear-gradient(180deg, var(--panel), var(--panel2));
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px;
-      box-shadow:var(--shadow);
-      backdrop-filter: blur(10px);
-    }
 
     .kicker{display:inline-flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(234,240,255,.86);font-weight:800}
     .kicker .bar{width:16px;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px}
 
-    h1{font-size:48px;line-height:1.03;margin:10px 0 10px;letter-spacing:-.02em}
+    .hero{margin-top:22px;display:grid;grid-template-columns:1.12fr .88fr;gap:18px;align-items:stretch}
+    .card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);backdrop-filter: blur(10px)}
+
+    h1{font-size:44px;line-height:1.05;margin:10px 0 10px;letter-spacing:-.02em}
     .lede{color:var(--muted);line-height:1.55;margin:0 0 12px;font-size:16px}
 
-    .ctaRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-    .subtle{color:rgba(184,196,230,.9);font-size:13px;margin-top:10px}
-
-    .badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-    .badge{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.03);border:1px solid var(--line);color:rgba(234,240,255,.9);font-weight:700;font-size:12px}
-    .badge .b{width:7px;height:7px;border-radius:999px;background:var(--ok); box-shadow:0 0 16px rgba(60,255,160,.35)}
-
-    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
     .mini h3{margin:0 0 6px;font-size:14px;color:#fff}
     .mini p{margin:0;font-size:13px;color:var(--muted);line-height:1.45}
 
     .section{margin-top:14px}
     .section h2{margin:0 0 10px;font-size:20px;letter-spacing:-.01em}
 
-    .split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .list{display:flex;flex-direction:column;gap:10px}
+    .item{display:flex;gap:10px;align-items:flex-start}
+    .b{width:7px;height:7px;border-radius:999px;background:var(--ok); box-shadow:0 0 16px rgba(60,255,160,.35);margin-top:7px;flex:0 0 auto}
 
-    .timeline{display:flex;flex-direction:column;gap:10px;margin-top:10px}
-    .step{display:flex;gap:10px;align-items:flex-start}
-    .num{flex:0 0 auto;width:26px;height:26px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;background:rgba(61,231,255,.10);border:1px solid rgba(61,231,255,.26);color:rgba(234,240,255,.92)}
-    .step b{display:block;margin:0 0 2px}
-    .step span{display:block;color:var(--muted);font-size:13px;line-height:1.45}
+    .footer{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:rgba(184,196,230,.92);font-size:13px}
+    .footer a{opacity:.9}
 
-    .summary{
-      border-radius:16px;
-      padding:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.22);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      color:rgba(234,240,255,.92);
-      font-size:12.5px;
-      line-height:1.45;
-      overflow:auto;
-      white-space:pre-wrap;
-    }
-
-    .footer{margin-top:18px;border-top:1px solid var(--line);padding-top:16px;color:rgba(184,196,230,.92);font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-    .footer a{opacity:.95}
-
-    @media(max-width:920px){
-      h1{font-size:40px}
-      .hero{grid-template-columns:1fr}
-      .grid3{grid-template-columns:1fr}
-      .split{grid-template-columns:1fr}
-    }
+    @media(max-width:880px){.hero{grid-template-columns:1fr} h1{font-size:38px}}
+    @media(max-width:740px){.grid3{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -147,105 +65,65 @@
       <div class="brand"><span class="dot"></span> Squidworks AI</div>
       <div class="pill">
         <a href="/pricing.html" class="btn ghost">Pricing</a>
+        <a href="/voice.html" class="btn ghost">Voice agents</a>
+        <a href="/battle-buddy.html" class="btn ghost">Battle Buddy</a>
         <a href="/vets.html" class="btn ghost">Vets</a>
-        <a href="/intake.html" class="btn primary">Get a demo</a>
+        <a href="/intake.html" class="btn primary">Quick intake</a>
       </div>
     </div>
 
     <div class="hero">
       <div class="card">
-        <div class="kicker"><span class="bar"></span> AI receptionist for inbound calls</div>
-        <h1>Every missed call is money.<br/>Let your agent pick up.</h1>
-        <p class="lede">We install a voice agent that answers inbound calls, captures the details that matter, and gives you an actionable summary—so you respond faster and stop leaking leads.</p>
-
-        <div class="ctaRow">
-          <a class="btn primary" href="/intake.html">Get a demo <span style="opacity:.75;font-weight:900">→</span></a>
-          <a class="btn ghost" href="/pricing.html">See pricing</a>
-        </div>
-        <div class="subtle">2–3 minute intake. No spam. Built for small business reality.</div>
-
-        <div class="badges">
-          <div class="badge"><span class="b"></span> Store-first intake (no lost submissions)</div>
-          <div class="badge"><span class="b"></span> Texting + automation on Standard+</div>
-          <div class="badge"><span class="b"></span> Upgrade anytime</div>
-        </div>
+        <div class="kicker"><span class="bar"></span> Business-clean, low-hype</div>
+        <h1>Demystify AI. Pick the next right step.</h1>
+        <p class="lede">
+          Squidworks helps busy operators turn AI from noise into practical systems — with clear boundaries, clean execution, and human control.
+        </p>
 
         <div class="grid3">
           <div class="card mini" style="box-shadow:none">
-            <h3>Answers immediately</h3>
-            <p>No more voicemail roulette. The agent picks up and stays calm.</p>
+            <h3>Clarity first</h3>
+            <p>We help you decide what to build (and what to ignore) so you don’t waste cycles chasing hype.</p>
           </div>
           <div class="card mini" style="box-shadow:none">
-            <h3>Captures clean info</h3>
-            <p>Name, business, intent, urgency—written into your CRM.</p>
+            <h3>Practical deployment</h3>
+            <p>Voice agents, inbox triage, intake, summaries — deployed with fail-safes and measurable outcomes.</p>
           </div>
           <div class="card mini" style="box-shadow:none">
-            <h3>Turns into next steps</h3>
-            <p>Summaries you can act on, plus optional texting and routing.</p>
+            <h3>Right relationship</h3>
+            <p>Automation should reduce friction, not create new dependence. You stay in control.</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Choose your entrypoint</h2>
+          <div class="list">
+            <div class="item"><span class="b"></span><div><b>Voice agents</b> — AI receptionist for inbound calls. <a href="/voice.html" class="btn ghost" style="padding:8px 10px;margin-left:8px">Open</a></div></div>
+            <div class="item"><span class="b"></span><div><b>Battle Buddy</b> — a calm first step to demystify AI. <a href="/battle-buddy.html" class="btn ghost" style="padding:8px 10px;margin-left:8px">Open</a></div></div>
+            <div class="item"><span class="b"></span><div><b>Veterans Forum</b> — panel follow-up form. <a href="/vets.html" class="btn ghost" style="padding:8px 10px;margin-left:8px">Open</a></div></div>
+            <div class="item"><span class="b"></span><div><b>Quick intake</b> — build a tailored demo. <a href="/intake.html" class="btn ghost" style="padding:8px 10px;margin-left:8px">Open</a></div></div>
           </div>
         </div>
       </div>
 
       <div class="card">
-        <div class="kicker"><span class="bar"></span> What you’ll see in the demo</div>
-        <div style="margin-top:10px" class="summary" aria-label="Example call summary">Caller: (843) 555-0137
-Name: Chris
-Business: Lowcountry HVAC
-Intent: Missed calls after-hours; wants leads captured + quick follow-up
-Urgency: This week
-Next step: Text intake link during call + notify owner
-
-Notes: Wants friendly tone; avoid quoting prices; route emergencies to on-call.</div>
-
-        <div class="section" style="margin-top:14px">
-          <h2>Demo process (what happens next)</h2>
-          <div class="timeline">
-            <div class="step"><div class="num">1</div><div><b>Submit intake</b><span>Start the quick intake so we can tailor the demo to your business.</span></div></div>
-            <div class="step"><div class="num">2</div><div><b>Demo prep call (10 min)</b><span>Our outbound agent calls to confirm call types, tone, and routing preferences.</span></div></div>
-            <div class="step"><div class="num">3</div><div><b>We build your demo agent</b><span>We rapidly stand up a demo based on your needs (hours, scripts, guardrails).</span></div></div>
-            <div class="step"><div class="num">4</div><div><b>Live demo</b><span>We schedule a live test call so you can hear it in action and request tweaks.</span></div></div>
-            <div class="step"><div class="num">5</div><div><b>Pay + deploy</b><span>If you want to move forward, we send a payment link and deploy quickly.</span></div></div>
-          </div>
+        <div class="kicker"><span class="bar"></span> What we optimize for</div>
+        <h2 style="margin:10px 0 10px;font-size:20px;letter-spacing:-.01em">Outcomes, not theatrics</h2>
+        <div class="list">
+          <div class="item"><span class="b"></span><div><b>Fewer dropped balls</b><br><span style="color:var(--muted);font-size:13px;line-height:1.45">Store-first capture, clean routing, and auditability.</span></div></div>
+          <div class="item"><span class="b"></span><div><b>Less cognitive load</b><br><span style="color:var(--muted);font-size:13px;line-height:1.45">Systems that remove friction instead of adding dashboards.</span></div></div>
+          <div class="item"><span class="b"></span><div><b>Human control</b><br><span style="color:var(--muted);font-size:13px;line-height:1.45">Draft-first where it matters. Auto-send only after trust is earned.</span></div></div>
         </div>
-
-        <div class="section" style="margin-top:14px">
-          <h2>After deployment (your reality)</h2>
-          <div class="timeline">
-            <div class="step"><div class="num">✓</div><div><b>Forward missed calls</b><span>Route calls that would hit voicemail to your agent instead.</span></div></div>
-            <div class="step"><div class="num">✓</div><div><b>24/7/365 coverage</b><span>The agent handles intake, captures leads, and summarizes outcomes.</span></div></div>
-            <div class="step"><div class="num">✓</div><div><b>Mature over time</b><span>We evolve the agent with knowledge, automation, and deeper routing as you grow.</span></div></div>
-          </div>
-        </div>
-
-        <div class="ctaRow" style="margin-top:14px">
-          <a class="btn primary" href="/intake.html">Start intake</a>
-          <a class="btn ghost" href="/pricing.html">Plans</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="section split">
-      <div class="card">
-        <div class="kicker"><span class="bar"></span> Who it’s for</div>
-        <p class="lede" style="margin-top:10px">Service businesses, clinics, contractors, and teams that lose leads because phones go unanswered—especially after-hours.</p>
-      </div>
-      <div class="card">
-        <div class="kicker"><span class="bar"></span> The promise</div>
-        <p class="lede" style="margin-top:10px">Fewer missed calls. Faster follow-up. Cleaner data. A calmer nervous system.</p>
       </div>
     </div>
 
     <div class="footer">
-      <div>© <span id="y"></span> Squidworks AI</div>
+      <div>© 2026 Squidworks AI</div>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <a href="/pricing.html">Pricing</a>
-        <a href="/intake.html">Intake</a>
         <a href="/privacy-policy.html">Privacy Policy</a>
-        <a href="/sms-terms.html">SMS Terms and Conditions</a>
+        <a href="/sms-terms.html">SMS Terms</a>
       </div>
     </div>
   </div>
-
-  <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
 </body>
 </html>
