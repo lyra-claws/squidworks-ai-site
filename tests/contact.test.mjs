@@ -28,6 +28,7 @@ for (const page of ['intake', 'vets', 'battle-buddy']) {
     assert.match(html, /href="mailto:lyra@devinharris\.me">lyra@devinharris\.me<\/a>/);
     assert.doesNotMatch(html, /<(?:form|input|textarea|select|script)\b/i);
     assert.doesNotMatch(html, /\/api\/intake|FormData|hello@squidworks\.ai|[?&]cc=/i);
+    assert.match(html, /<!--email_off--><a class="email-link"[^>]+>lyra@devinharris\.me<\/a><!--\/email_off-->/);
     assert.match(html, /:focus-visible/);
     assert.match(html, /aria-labelledby="contact-heading"/);
   });
