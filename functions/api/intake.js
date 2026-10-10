@@ -7,8 +7,8 @@ export function onRequest() {
   return new Response(JSON.stringify({
     ok: false,
     error: 'intake_retired',
-    message: 'This form is no longer available. Please email lyra@devinharris.me.',
-    contact: 'mailto:lyra@devinharris.me',
+    message: 'This form is no longer available. Please email lyra@squidworksai.com.',
+    contact: 'mailto:lyra@squidworksai.com',
   }), {
     status: 410,
     headers: {

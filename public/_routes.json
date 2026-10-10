@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "include": [
+    "/api/intake",
+    "/api/intake/",
+    "/voice",
+    "/voice.html",
+    "/voice/",
+    "/voice.html/",
+    "/pricing",
+    "/pricing.html",
+    "/pricing/",
+    "/pricing.html/",
+    "/intake",
+    "/intake.html",
+    "/intake/",
+    "/intake.html/",
+    "/vets",
+    "/vets.html",
+    "/vets/",
+    "/vets.html/",
+    "/battle-buddy",
+    "/battle-buddy.html",
+    "/battle-buddy/",
+    "/battle-buddy.html/"
+  ],
+  "exclude": []
+}

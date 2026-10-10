@@ -1,21 +1,26 @@
 # Squidworks AI
 
-Static marketing site hosted on Cloudflare Pages. Contact on the demo, Veterans Forum, and Battle Buddy pages is email-only: **lyra@devinharris.me**.
+Single-page, email-only teaser hosted on the existing Cloudflare Pages project `squidworks-ai-site`. Contact: **lyra@squidworksai.com**, no CC.
 
 ## Structure
-- `public/`: static pages and assets
-- `functions/api/intake.js`: retired intake endpoint; every HTTP method returns `410 Gone` with the email alternative
-- `tests/contact.test.mjs`: isolated regression tests
+- `public/`: approved page, local styles/assets, real 404, historical policies, safe retired-offer notices
+- `functions/_middleware.js`: exact former-offer routes return HTTP 410; no data, body, binding, or provider access
+- `functions/api/intake.js`: existing retired endpoint behavior; every method returns 410 without reading context
+- `public/_routes.json`: restrict Function invocation to the retired offers and intake endpoint
+- `tests/contact.test.mjs`: isolated safety, route, policy and content tests
+- `tests/static.test.mjs`: layout/content/asset/contrast checks
 
-## Contact flow
-The three former forms have been replaced by visible, selectable email links. They work without JavaScript and do not send requests to the old API. No CC address is added.
+## Routes
+`/` is the current teaser. `/voice`, `/pricing`, `/intake`, `/vets`, `/battle-buddy`, their `.html` variants and trailing-slash variants return an informative 410 notice. Static notices contain no obsolete offers even if Functions fail open. `/api/intake` and `/api/intake/` remain 410 with no submission processing. Unknown pages use `public/404.html` with a real 404 from Pages.
 
-The retired endpoint does not parse request bodies, access environment bindings, write to D1, or call GoHighLevel. Existing records, schema, bindings, and secrets remain unchanged. Do not remove them as part of this fix.
+Privacy Policy and SMS Terms remain at their established URLs and normal Pages aliases. Their wording, dates, and contact records are unchanged. Only obsolete Pricing footer navigation was removed. Their preservation does not establish current provider activity, alter existing consent or obligations, or certify compliance.
 
-## Local checks
-Run `node --test tests/contact.test.mjs` (Node.js 20+). Preview static pages with `python3 -m http.server 8000 --directory public`; this static server does not run Pages Functions.
+## Checks
+Run `node --test tests/*.test.mjs` (Node.js 20+). A plain static server does not test Pages routing. Test API methods only in isolation with context/bindings/network blocked. Public checks must use harmless GET/HEAD only. Never submit a production form or test message.
 
-Check mobile layout, keyboard focus, and the email link on each contact page. Email sending itself is handled by the visitor’s email application.
+## Deployment and rollback
+The existing Pages project auto-deploys `main` using `public/` as output. Preview branches share production D1; no data testing is permitted. Keep existing database, provider configuration, bindings, secrets and DNS unchanged.
 
-## Deployment safety
-Cloudflare Pages deploys `main` to production. Preview branches currently share the production D1 database; never test form submissions against a deployed environment. Run endpoint tests locally with blocked bindings/network access. After deployment, verify the exact commit in Cloudflare and use only harmless GET checks for the retired endpoint.
+Release reference: approved private preview source `dab85d40a6cf62525d91dda5d0538eb5909e8c4f`. Public changes remove preview-only labeling/index blocking, protect both visible email and mailto from edge obfuscation, add existing policy links and retire former offer URLs.
+
+Verified pre-cutover source: `d884cf8380f4a59bd5cf23ac250493df4e13d2b9`. Verified successful production deployment: `2a7dd6ea-1007-409e-9a28-df72ee10c5c6` (9 October 2026, 17:14 UTC). It contains the intake 410 guard, but restores old sales pages if rolled back. Do not roll back to any pre-guard source. Prefer correcting a narrowly scoped release regression forward; if using a known-good production rollback, reconcile `main` with a reviewed revert to prevent a later automatic redeploy from undoing it. Never force-push or modify database/provider state for website rollback.
