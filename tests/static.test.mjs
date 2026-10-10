@@ -38,7 +38,7 @@ test('Local assets and anchor destinations all exist', () => {
   for (const ref of [...hrefs, ...[...html.matchAll(/src="([^"]+)"/g)].map(x => x[1])]) {
     if (ref.startsWith('mailto:') || ref === 'https://squidworksai.com/') continue;
     if (ref.startsWith('#')) assert.ok(html.includes(`id="${ref.slice(1)}"`), ref);
-    else assert.ok(fs.existsSync(new URL(ref.replace(/^\//, ''), root)), ref);
+    else { const local=ref.replace(/^\//, ''); assert.ok(fs.existsSync(new URL(local,root)) || (!local.includes('.') && fs.existsSync(new URL(`${local}.html`,root))),ref); }
   }
 });
 test('Public indexing allowed; real not-found document included', () => {

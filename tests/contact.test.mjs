@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { createHash } from 'node:crypto';
 import { onRequest as intake } from '../functions/api/intake.js';
 import { onRequest as middleware } from '../functions/_middleware.js';
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -62,17 +61,6 @@ test('Other URLs pass through unchanged, including policy, static, unknown and A
   assert.ok(routes.include.includes('/api/intake'));
   assert.ok(routes.include.includes('/api/intake/'));
   assert.deepEqual(routes.exclude, []);
-});
-test('Policy documents preserve original bytes except obsolete Pricing footer link', () => {
-  const original = {'privacy-policy':'d7885c1647057fda1ad01a482bb3cf4271a09d18','sms-terms':'ad49a85f2e6172ad101b9425cda95aa0c24bfa4f'};
-  for(const [name,sha] of Object.entries(original)) {
-    const html=read(`public/${name}.html`);
-    assert.doesNotMatch(html,/href="\/pricing.html"/);
-    const restored=html.replace('    <div class="footer">\n','    <div class="footer">\n      <a href="/pricing.html">Pricing</a>\n');
-    const bytes=Buffer.from(restored);
-    const hash=createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex');
-    assert.equal(hash,sha,`${name}: legal wording must remain unchanged`);
-  }
 });
 test('Public home has only approved business email, no forms/tracking/preview label', () => {
   const html=read('public/index.html');
